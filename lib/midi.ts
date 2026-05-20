@@ -1,14 +1,25 @@
 // Web MIDI API wrapper — runs in the browser, talks to djay Pro
 
+// Inline MIDI types so we don't depend on WebMidi namespace at build time
+interface MIDIOutput {
+  id: string | null;
+  name: string | null;
+  send(data: number[] | Uint8Array): void;
+}
+
+interface MIDIAccess {
+  outputs: Map<string, MIDIOutput>;
+}
+
 export interface MidiPort {
   id: string;
   name: string;
-  output: WebMidi.MIDIOutput;
+  output: MIDIOutput;
 }
 
 class WebMidiController {
-  private access: WebMidi.MIDIAccess | null = null;
-  private output: WebMidi.MIDIOutput | null = null;
+  private access: MIDIAccess | null = null;
+  private output: MIDIOutput | null = null;
   private channel = 0;
 
   // CC mappings (match your djay Pro MIDI mapping)
